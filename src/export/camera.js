@@ -8,6 +8,7 @@
 import _ from 'lodash';
 import RenderActions from '/actions/render';
 import UserActions from '/actions/user';
+import CameraStore from '/stores/camera'
 
 const Procedural = {};
 
@@ -117,5 +118,9 @@ Procedural.orbitTarget = function () {
 Procedural.setCameraMode = function ( mode ) {
   setTimeout( function () { UserActions.setCameraMode( mode ) }, 0 );
 };
+
+Procedural.onCamera = function (callback) {
+  CameraStore.listen(callback)
+}
 
 export default Procedural;
