@@ -99,7 +99,7 @@ let projectedDistance = null;
 let debugClick = null;
 if ( __dev__ ) {
   window.addEventListener( 'mousedown', e => {
-    if ( e.altKey ) {
+    if (e.ctrlKey) {
       const rect = e.target.getBoundingClientRect();
       debugClick = {
         x: ( e.clientX - rect.x ) / rect.width,
@@ -205,8 +205,10 @@ function draw() {
       terrainError = 10 * terrainError - 5; // re-bias to -5 > 5
       let tile = tiles.find( x => x.id === pickedTile );
       if ( tile ) {
-        log( `[${tile.x},${tile.y},${tile.z}] (${tile.imageryKey})`, terrainError, `${tile.bestImagery.quadkey}(${tile.bestImagery.downsample})` );
+        log(`mouse tile [${tile.x},${tile.y},${tile.z}] (${tile.imageryKey})`, terrainError, `${tile.bestImagery.quadkey}(${tile.bestImagery.downsample})`);
         window.debugTile = tile;
+      } else {
+        log('mouse tile not found', pickedTile)
       }
 
       debugClick = null;
