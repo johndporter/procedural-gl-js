@@ -56,7 +56,7 @@ class BaseDatasource {
     this.textureArray.useFloat = this.useFloat;
 
     if ( this.useFloat ) {
-      const size = 1024; // TODO reduce in future!
+      const size = 2048; // TODO reduce in future!
       this.indirectionTexture = new THREE.DataTexture( null,
         size, size,
         // TODO Could perhaps use smaller format
@@ -190,7 +190,7 @@ class BaseDatasource {
       for ( let q of quadkeys ) {
         let [ x, y, z ] = tilebelt.quadkeyToTile( q );
         let tileIndex = this.lookup[ q ];
-        let size = Math.pow( 2, 10 - z );
+        let size = Math.pow(2, 11 - z);
         x *= size; y *= size; // Move to zoom level 10
         let data = new Float32Array( 4 * size * size );
         let tileSize = Math.pow( 2, z );
@@ -216,7 +216,8 @@ class BaseDatasource {
   // Locates the highest resolution data we have for this tile
   // return the data index and number of levels we are
   // downsampling by
-  findBestAvailableData( quadkey, silent ) {
+  findBestAvailableData(quadkey, silent) {
+    let oquadkey = quadkey
     for ( let downsample = 0; downsample < 20; downsample++ ) {
       // See if we have imagery already...
       let index = this.lookup[ quadkey ];
@@ -231,7 +232,7 @@ class BaseDatasource {
     }
 
     if ( !silent ) {
-      log( 'Failed to find data', quadkey );
+      log('Failed to find data',oquadkey);
     }
 
     return { index: null, downsample: 20, quadkey: null };

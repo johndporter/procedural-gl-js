@@ -16,9 +16,11 @@ import ImageryDatasource from '/datasources/imagery';
 import ElevationDatasource from '/datasources/elevation';
 
 import GeoprojectStore from '/stores/geoproject';
+import { ELEVATION_TILE_SIZE, IMAGERY_TILE_SIZE } from '/constants';
 
 // Relative scale of terrain and imagery
-const exponent = 2; // Remember terrain tiles are 512, imagery 256
+// Remember terrain tiles are 512, imagery 256
+const exponent = Math.floor(ELEVATION_TILE_SIZE / IMAGERY_TILE_SIZE);
 
 let tilePool = [];
 let idCounter = 1;
@@ -71,7 +73,7 @@ class Tile {
     this.z = z;
 
     // x, y, z reference to elevation tile
-    let exp = Math.max( exponent, this.z - 10 ); // Cap elevation tile level to 10
+    let exp = Math.max(exponent, this.z - 11); // Cap elevation tile level to 10
     this.x2 = Math.floor( this.x / Math.pow( 2, exp ) );
     this.y2 = Math.floor( this.y / Math.pow( 2, exp ) );
     this.z2 = this.z - exp;
@@ -80,7 +82,7 @@ class Tile {
     // At exp level 0 (max terrain resolution) we want one vertex
     // per terrain tile pixel (so 512). As tile size is double
     // of imagery, multiply by 2 to get 1024
-    let segments = 1024 / Math.pow( 2, exp );
+    let segments = 1024 / Math.pow(2, exp) * 2
 
     // Cap segment to reasonable range 1-64
     segments = Math.min( 64, Math.max( 1, segments ) );
@@ -183,7 +185,7 @@ class Tile {
     // Where we are present in scene, but not seen get
     // get lower resolution data (2 tile levels below),
     // so as we pan around we don't have gaps
-    } else if ( this.wasRendered && this.z > 10 ) {
+    } else if (this.wasRendered && this.z > 11) {
       ImageryDatasource.fetchIfNeeded( this.imageryKey.slice( 0, -2 ) );
     // To make sure we always have someting to show, get some very
     // low res data
