@@ -49,6 +49,9 @@ Procedural.displayLocation( montBlanc );
 Screenshots
 ===========
 <p>
+<img src="https://raw.githubusercontent.com/johndporter/procedural-gl-js/main/screenshots/jdp1.jpg" width="30%" >
+</p>
+<p>
 <img src="https://raw.githubusercontent.com/felixpalmer/procedural-gl-js/main/screenshots/1.jpg" width="17%" >
 <img src="https://raw.githubusercontent.com/felixpalmer/procedural-gl-js/main/screenshots/2.jpg" width="17%" align="left" />
 <img src="https://raw.githubusercontent.com/felixpalmer/procedural-gl-js/main/screenshots/3.jpg" width="17%" align="left" />
