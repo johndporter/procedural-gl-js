@@ -64,12 +64,12 @@ var tmp = {
   tangent: tangent
 };
 
-var LineCurve = function ( points, colors ) {
+var LineCurve = function (points, colors, straight) {
   THREE.Curve.call( this );
 
   this.hDelta = 3;
   this.points = ( points === undefined ) ? [] : points;
-
+  this.straight = straight
   // Optionally pass a set of colors to map to each point
   if ( colors ) {
     this.colors = colors.map( function ( c ) {
@@ -96,10 +96,15 @@ LineCurve.prototype.getPoint = function ( t ) {
 
   // TODO should avoid new creation
   vector = new THREE.Vector3();
+  if (!this.straight) {
   catmullGenerator.generate( p0.x, p1.x, p2.x, p3.x, weight );
   vector.x = catmullGenerator.position;
   catmullGenerator.generate( p0.y, p1.y, p2.y, p3.y, weight );
   vector.y = catmullGenerator.position;
+  } else {
+    vector.x = p1.x * (1 - weight) + p2.x * weight
+    vector.y = p1.y * (1 - weight) + p2.y * weight
+  }
   vector.z = this.hDelta;
 
   return vector;
@@ -144,12 +149,19 @@ LineCurve.prototype.getPointAndTangent = function ( t ) {
 
   // Potentially expensive, should look at optimizing. E.g. store curve
   // in st coordinate space?
+  if (!this.straight) {
   catmullGenerator.generate( p0.x, p1.x, p2.x, p3.x, weight, true );
   position.x = catmullGenerator.position;
   tangent.x = catmullGenerator.tangent;
   catmullGenerator.generate( p0.y, p1.y, p2.y, p3.y, weight, true );
   position.y = catmullGenerator.position;
   tangent.y = catmullGenerator.tangent;
+  } else {
+    position.x = p1.x * (1 - weight) + p2.x * weight
+    tangent.x = p2.x - p1.x
+    position.y = p1.y * (1 - weight) + p2.y * weight
+    tangent.y = p2.y - p1.y
+  }
   position.z = this.hDelta;
   tangent.z = 0; // As position.z is constant, this is always 0
   tangent.normalize();

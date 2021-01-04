@@ -122,13 +122,13 @@ LinesBase.prototype.createGeometry = function ( feature ) {
     }
   }
 
-  var curve = new LineCurve( projected, colors );
+  var curve = new LineCurve(projected, colors, feature.properties.straight);
   feature.curve = curve;
   time = track.now() - startTime; this.curveTime += time;
 
   startTime = track.now();
   feature.thickness = FeatureUtils.thickness( feature );
-  curve.hDelta = 3 + 0.5 * feature.thickness;
+  curve.hDelta = 3 + 0.5 * feature.thickness + feature.height || 0;
 
   // We need the curve length, but this is expensive to calculate,
   // as a rough estimate is fine here, reduce the number of arc
