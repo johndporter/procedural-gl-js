@@ -13,6 +13,7 @@
 uniform lowp sampler2D indirectionTexture;
 uniform vec2 uGlobalOffset;
 uniform float uSceneScale;
+uniform lowp sampler2D normalArray;
 
 #include readTexVirtual.glsl
 
@@ -35,6 +36,8 @@ vec4 readTexHeight(in sampler2D tex, in vec2 tile) {
   vec2 limits = vec2( 0, VIRTUAL_TEXTURE_ARRAY_SIZE);
   vec2 arrayUv = ( clamp( uv, limits.x, limits.y ) + offset ) / VIRTUAL_TEXTURE_ARRAY_BLOCKS;
   vec4 res = texture2D( tex, arrayUv );
+  vec4 norms = texture2D(normalArray, arrayUv);
+  res.b = norms.a;
   return res;
 }
 

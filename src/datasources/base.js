@@ -56,6 +56,24 @@ class BaseDatasource {
     this.textureArray.useFloat = this.useFloat;
 
     if ( this.useFloat ) {
+      this.textureNArray = new THREE.DataTexture(null,
+        virtualTextureSize, virtualTextureSize,
+        // RGB seems to run *slower* than RGBA on iOS
+        this.useFloat ? THREE.AlphaFormat : THREE.RGBAFormat,
+        // HalfFloat doesn't work on iOS :(
+        this.useFloat ? THREE.FloatType : THREE.UnsignedByteType,
+        THREE.UVMapping,
+        THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping,
+        TextureFilter, TextureFilter,
+        //THREE.LinearFilter, THREE.LinearFilter,
+        //THREE.NearestFilter, THREE.NearestFilter,
+        renderer.capabilities.getMaxAnisotropy()
+      );
+      this.textureNArray.__blocks = n;
+      this.textureNArray.useFloat = this.useFloat;
+    }
+
+    if (this.useFloat) {
       const size = 2048; // TODO reduce in future!
       this.indirectionTexture = new THREE.DataTexture( null,
         size, size,
@@ -87,7 +105,7 @@ class BaseDatasource {
     let downloadIndices = Object.values( this.fetching );
     if ( downloadIndices.length > 32 ) {
       log( 'throttling...' );
-      return;
+      //return;
     }
 
     let newIndex = this.findNewIndex( quadkey );
@@ -100,7 +118,7 @@ class BaseDatasource {
     ImageLoader.load( url, ( image ) => {
       // Image loaded OK
         this.imgCache[ quadkey ] = image;
-        insertIntoTextureArray( this.textureArray, newIndex, image );
+      insertIntoTextureArray(this.textureArray, newIndex, image, this.textureNArray);
 
         // Remove download and mark image location in lookup
         delete this.fetching[ quadkey ];
@@ -198,7 +216,7 @@ class BaseDatasource {
         for ( let i = 0; i < data.length; i++ ) {
           // Location of tile in texture array
           data[ 4 * i ] = tileIndex;
-          // Tile size
+          // Tile size 2**z => 
           data[ 4 * i + 1 ] = tileSize;
           // Tile origin position (scaled to save GPU instructions)
           data[ 4 * i + 2 ] = x * originScale;

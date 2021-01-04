@@ -14,6 +14,7 @@ uniform vec4 uImageryUvOffset;
 varying vec4 vUV; // xy: scaled for imagery lookup, zw: actual uv across tile
 
 varying float D;
+varying float L;
 
 uniform lowp sampler2D imageryArray;
 
@@ -29,7 +30,7 @@ void main() {
   float fogAmount = fogFactor( D );
   color = mix( color, uFogColor, fogAmount );
 
-  gl_FragColor = vec4( color, 1.0 );
+  gl_FragColor = vec4( color*L, 1.0 );
 
   //// Edge debug
   //gl_FragColor.r *= 1.0 - dot( vec2( 1.0 ), step( vUV.xy, vec2( 0.01 ) ) );

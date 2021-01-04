@@ -19,6 +19,7 @@ uniform vec4 uImageryUvOffset;
 
 varying vec4 vUV;
 varying float D;
+varying float L;
 
 #include getHeight.glsl
 
@@ -32,7 +33,11 @@ void main() {
   vec2 skirt = 10.0 * floor( position.zw / 10.0 );
   vec2 uv = position.zw - skirt;
 
-  p.z = getHeight( p.xy );
+  vec4 res = getHeightN(p.xy);
+  p.z = res.a;
+  //L = (res.b+7.0)/8.0;
+  L = (res.b+3.0)/4.0;
+
 
   // Pull down skirt vertices
   p.z -= 0.01 * uOffset.z * skirt.x;
@@ -45,4 +50,5 @@ void main() {
   D = distance( cameraPosition, p.xyz );
 
 	gl_Position = projectionMatrix * viewMatrix * p;
+
 }

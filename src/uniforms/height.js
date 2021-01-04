@@ -12,6 +12,7 @@ import GeoprojectStore from '/stores/geoproject';
 // Uniforms for shaders that lookup height
 const heightUniforms = {
   elevationArray: { value: ElevationDatasource.textureArray },
+  normalArray: { value: ElevationDatasource.textureNArray },
   indirectionTexture: { value: ElevationDatasource.indirectionTexture },
   uGlobalOffset: { type: 'v2', value: new THREE.Vector2() },
   uSceneScale: { type: 'f', value: 1 }
